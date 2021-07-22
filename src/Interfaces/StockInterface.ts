@@ -9,3 +9,12 @@ export interface IStock {
   "8. currency": string;
   "9. matchScore": string;
 }
+
+export interface IStockDetails {
+  Symbol: string;
+  Name: string;
+  Address: string;
+  MarketCapitalization: string;
+  Description: string;
+  Currency: string;
+}

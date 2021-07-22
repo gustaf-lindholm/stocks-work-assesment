@@ -3,7 +3,7 @@ import * as React from 'react';
 import { IStock } from '../Interfaces/StockInterface';
 import { nanoid } from 'nanoid';
 
-const Portfolio: React.FC<{ portfolio: IStock[] | [] }> = ({ portfolio }) => {
+const Portfolio: React.FC<{ portfolio: IStock[] | [], onRemoveFromPortfolio: (id: string) => void }> = ({ portfolio, onRemoveFromPortfolio }) => {
   return (
     <Box>
       <Table variant="striped" colorScheme="gray">
@@ -22,7 +22,7 @@ const Portfolio: React.FC<{ portfolio: IStock[] | [] }> = ({ portfolio }) => {
                 <Td>{item['2. name']}</Td>
                 <Td>{item['1. symbol']}</Td>
                 <Td>
-                  <Button>Remove</Button>
+                  <Button backgroundColor="red.100" onClick={() => onRemoveFromPortfolio(item['1. symbol'])}>Remove</Button>
                 </Td>
               </Tr>
             );

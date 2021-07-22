@@ -3,10 +3,13 @@ import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control'
 import { Input } from '@chakra-ui/input';
 
 const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSearchResult }) => {
+
+  const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
+
   const [searchParam, setSearchParam] = React.useState('');
 
   React.useEffect(() => {
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=HTJRJGUCDN10NMV9`;
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
 
     const search = async () => {
       try {
