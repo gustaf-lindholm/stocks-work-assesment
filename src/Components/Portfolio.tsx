@@ -1,13 +1,13 @@
-import { Box, Table, TableCaption, Tbody, Td, Th, Thead, Tr, Button } from '@chakra-ui/react';
+import { Box, Table, TableCaption, Tbody, Td, Th, Thead, Tr, Button, LinkBox, LinkOverlay } from '@chakra-ui/react';
 import * as React from 'react';
-import { IStock } from '../Interfaces/StockInterface';
+import { IStock } from '../Interfaces/StockInterfaces';
 import { nanoid } from 'nanoid';
+import { NavLink } from 'react-router-dom';
 
 const Portfolio: React.FC<{ portfolio: IStock[] | [], onRemoveFromPortfolio: (id: string) => void }> = ({ portfolio, onRemoveFromPortfolio }) => {
   return (
-    <Box>
       <Table variant="striped" colorScheme="gray">
-        <TableCaption>Imperial to metric conversion factors</TableCaption>
+        {portfolio.length === 0 && <TableCaption>Search for stocks and add them to the portfolio</TableCaption>}
         <Thead>
           <Tr>
             <Th>Company Name</Th>
@@ -18,18 +18,17 @@ const Portfolio: React.FC<{ portfolio: IStock[] | [], onRemoveFromPortfolio: (id
         <Tbody>
           {portfolio.map((item) => {
             return (
-              <Tr key={nanoid()}>
-                <Td>{item['2. name']}</Td>
-                <Td>{item['1. symbol']}</Td>
+              <LinkBox as="tr" key={nanoid()}>
+                <Td fontSize={["sm", "md"]}>{`⭐ ${item['2. name']}`}</Td>
+                <Td fontSize={["sm", "md"]}><LinkOverlay as={NavLink} to={`/details/${item['1. symbol']}`}>{item['1. symbol']}</LinkOverlay></Td>
                 <Td>
-                  <Button backgroundColor="red.100" onClick={() => onRemoveFromPortfolio(item['1. symbol'])}>Remove</Button>
+                  <Button _hover={{backgroundColor: "red"}} onClick={() => onRemoveFromPortfolio(item['1. symbol'])}>🗑️</Button>
                 </Td>
-              </Tr>
+              </LinkBox>
             );
           })}
         </Tbody>
       </Table>
-    </Box>
   );
 };
 
