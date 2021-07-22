@@ -1,11 +1,19 @@
 import { Flex } from '@chakra-ui/layout';
-import { Heading } from '@chakra-ui/react';
+import { Button, Heading, Link, Spacer, Text } from '@chakra-ui/react';
 import * as React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Header = () => {
-  return <Flex borderBottom="1px solid gray" height="50px">
-    <Heading>Stocks</Heading>
-  </Flex>;
+  return (
+    <Flex minH="80px" mb="6" borderBottom="1px solid gray" shadow="md" height="50px" alignItems="center">
+        <Heading flex="1" as={NavLink} to="/">Stocks</Heading>
+      {/* <Spacer /> */}
+      <Button as={NavLink} to="/">
+        Start
+      </Button>
+      <Spacer />
+    </Flex>
+  );
 };
 
 export default Header;
