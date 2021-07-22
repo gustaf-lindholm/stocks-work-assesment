@@ -1,6 +1,6 @@
 import { Box, Table, TableCaption, Tbody, Td, Th, Thead, Tr, Button, LinkBox, LinkOverlay } from '@chakra-ui/react';
 import * as React from 'react';
-import { IStock } from '../Interfaces/StockInterface';
+import { IStock } from '../Interfaces/StockInterfaces';
 import { nanoid } from 'nanoid';
 import { NavLink } from 'react-router-dom';
 

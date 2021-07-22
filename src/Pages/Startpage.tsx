@@ -2,7 +2,7 @@ import { Box, Flex, Heading } from '@chakra-ui/layout';
 import * as React from 'react';
 import Portfolio from '../Components/Portfolio';
 import Search from '../Components/Search';
-import { IStock } from '../Interfaces/StockInterface';
+import { IStock } from '../Interfaces/StockInterfaces';
 
 const StartPage: React.FC = () => {
 

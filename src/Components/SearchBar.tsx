@@ -18,7 +18,7 @@ const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSea
 
         if (response.ok) {
           const searchResult = await response.json();
-          console.log(searchResult);
+
           setSearchResult(searchResult.bestMatches);
         }
       } catch (error) {
