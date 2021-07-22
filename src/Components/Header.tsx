@@ -5,13 +5,17 @@ import { NavLink } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <Flex minH="80px" mb="6" borderBottom="1px solid gray" shadow="md" height="50px" alignItems="center">
-        <Heading flex="1" as={NavLink} to="/">Stocks</Heading>
-      {/* <Spacer /> */}
-      <Button as={NavLink} to="/">
-        Start
-      </Button>
-      <Spacer />
+    <Flex
+      minH="80px"
+      mb="6"
+      borderBottom="1px solid gray"
+      shadow="md"
+      height="50px"
+      alignItems="center"
+    >
+      <Heading flex="1" as={NavLink} to="/">
+        Stocks
+      </Heading>
     </Flex>
   );
 };

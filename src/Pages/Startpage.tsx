@@ -4,33 +4,21 @@ import Portfolio from '../Components/Portfolio';
 import Search from '../Components/Search';
 import { IStock } from '../Interfaces/StockInterfaces';
 
-const StartPage: React.FC = () => {
-
-  const [portFolio, setPortfolio] = React.useState<IStock[]>([]);
-
-  const onAddToPortfolio = (stock: IStock) => {
-    setPortfolio((currentPortfolio) => {
-      return currentPortfolio?.concat(stock);
-    });
-  };
-
-  const onRemoveFromPortfolio = (id: string) => {
-    setPortfolio((currentPortfolio) => {
-      return currentPortfolio.filter((stock, index) => {
-        return id !== currentPortfolio[index]['1. symbol'];
-      });
-    });
-  };
+const StartPage: React.FC<{
+  portfolio: IStock[] | [];
+  onAddToPortfolio: (stock: IStock) => void;
+  onRemoveFromPortfolio: (id: string) => void;
+}> = ({onAddToPortfolio, onRemoveFromPortfolio, portfolio}) => {
   return (
     <Flex flexWrap="wrap">
-    <Box border="1px solid gray" p="4" width={{ sm: '100%', md: '50%' }}>
-      <Search onAddToPortfolio={onAddToPortfolio} />
-    </Box>
-    <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
-      <Portfolio portfolio={portFolio} onRemoveFromPortfolio={onRemoveFromPortfolio} />
-    </Box>
-  </Flex>
-  )
-}
+      <Box border="1px solid gray" p="4" width={{ sm: '100%', md: '50%' }}>
+        <Search onAddToPortfolio={onAddToPortfolio} />
+      </Box>
+      <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
+        <Portfolio portfolio={portfolio} onRemoveFromPortfolio={onRemoveFromPortfolio} />
+      </Box>
+    </Flex>
+  );
+};
 
 export default StartPage;

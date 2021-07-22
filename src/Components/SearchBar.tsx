@@ -3,7 +3,7 @@ import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control'
 import { Input } from '@chakra-ui/input';
 import { InputGroup, InputLeftAddon } from '@chakra-ui/react';
 
-const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSearchResult }) => {
+const SearchBar: React.FC<{ setSearchResult: (result: []) => void, setIsLoading: (arg: boolean) => void, isLoading: boolean }> = ({ setSearchResult, setIsLoading, isLoading }) => {
 
   const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
 
@@ -13,6 +13,7 @@ const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSea
     const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
 
     const search = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(url);
 
@@ -23,6 +24,8 @@ const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSea
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false)
       }
     };
 
