@@ -1,9 +1,8 @@
+import * as React from 'react';
 import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control';
 import { Input } from '@chakra-ui/input';
-import * as React from 'react';
 
-
-const SearchBar: React.FC<{setSearchResult: (result: []) => void}> = ({ setSearchResult }) => {
+const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSearchResult }) => {
   const [searchParam, setSearchParam] = React.useState('');
 
   React.useEffect(() => {
@@ -16,7 +15,7 @@ const SearchBar: React.FC<{setSearchResult: (result: []) => void}> = ({ setSearc
         if (response.ok) {
           const searchResult = await response.json();
           console.log(searchResult);
-          setSearchResult(searchResult.bestMatches)
+          setSearchResult(searchResult.bestMatches);
         }
       } catch (error) {
         console.log(error);
