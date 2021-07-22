@@ -16,4 +16,5 @@ export interface IStockDetails {
   Address: string;
   MarketCapitalization: string;
   Description: string;
+  Currency: string;
 }
