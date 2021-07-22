@@ -6,10 +6,15 @@ import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 
 const Search = () => {
+
+  const [searchResult, setSearchResult] = React.useState<[] | undefined>()
+
+
+
   return (
     <Box>
-      <SearchBar />
-      <SearchResults />
+      <SearchBar setSearchResult={setSearchResult}/>
+      <SearchResults searchResult={searchResult!}/>
     </Box>
   );
 };
