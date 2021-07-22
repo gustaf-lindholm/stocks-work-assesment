@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control';
 import { Input } from '@chakra-ui/input';
+import { InputGroup, InputLeftAddon } from '@chakra-ui/react';
 
 const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSearchResult }) => {
 
@@ -32,14 +33,18 @@ const SearchBar: React.FC<{ setSearchResult: (result: []) => void }> = ({ setSea
   }, [searchParam]);
 
   return (
-    <FormControl id="symbol">
+    <FormControl id="symbol" mb="2">
       <FormLabel>Stock search</FormLabel>
+      <InputGroup>
+      <InputLeftAddon children="🔍"/>
       <Input
         onChange={(e) => {
           setSearchParam(e.target.value);
         }}
         type="text"
+        placeholder="Saab"
       />
+      </InputGroup>
       <FormHelperText>Search for stocks with name or symbol</FormHelperText>
     </FormControl>
   );

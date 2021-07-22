@@ -23,7 +23,7 @@ const StartPage: React.FC = () => {
   };
   return (
     <Flex flexWrap="wrap">
-    <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
+    <Box border="1px solid gray" p="4" width={{ sm: '100%', md: '50%' }}>
       <Search onAddToPortfolio={onAddToPortfolio} />
     </Box>
     <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
