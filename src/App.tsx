@@ -17,10 +17,18 @@ const App = () => {
   const [portFolio, setPortfolio] = React.useState<IStock[]>([])
 
   const onAddToPortfolio = (stock: IStock) => {
-    setPortfolio((currentTodos) => {
-      return currentTodos?.concat(stock);
+    setPortfolio((currentPortfolio) => {
+      return currentPortfolio?.concat(stock);
     })
   };
+
+  const onRemoveFromPortfolio = (id: string) => {
+    setPortfolio((currentPortfolio) => {
+      return currentPortfolio.filter((stock, index) => {
+        return id !== currentPortfolio[index]['1. symbol']
+      })
+    })
+  }
 
   return (
     <ChakraProvider theme={theme}>
@@ -31,7 +39,7 @@ const App = () => {
             <Search onAddToPortfolio={onAddToPortfolio}/>
           </Box>
           <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
-            <Portfolio portfolio={portFolio}/>
+            <Portfolio portfolio={portFolio} onRemoveFromPortfolio={onRemoveFromPortfolio}/>
           </Box>
         </Flex>
       </Container>
