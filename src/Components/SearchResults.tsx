@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List, ListItem, Text, Spacer, Button } from '@chakra-ui/react';
-import { IStock } from '../Interfaces/StockInterface';
+import { IStock } from '../Interfaces/StockInterfaces';
 
 const SearchResults: React.FC<{
   searchResult: IStock[];
