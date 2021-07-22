@@ -13,6 +13,8 @@
     "@types/node": "^12.20.16",
     "@types/react": "^16.14.11",
     "@types/react-dom": "^16.9.14",
+    "@types/react-router": "^5.1.16",
+    "@types/react-router-dom": "^5.1.8",
     "framer-motion": "^4.1.17",
     "nanoid": "^3.1.23",
     "react": "^17.0.2",
@@ -43,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": "^7.14.5"
   }
 }
