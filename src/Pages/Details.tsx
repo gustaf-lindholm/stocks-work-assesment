@@ -9,6 +9,8 @@ type Params = {
 };
 
 const Details = () => {
+  const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
+
   const { stockSymbol }: Params = useParams();
   const [stockDetails, setStockDetails] = React.useState<IStockDetails | null>(null);
 
@@ -21,7 +23,7 @@ const Details = () => {
   }
 
   React.useEffect(() => {
-    const url = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stockSymbol}&apikey=HTJRJGUCDN10NMV9`;
+    const url = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stockSymbol}&apikey=${apiKey}`;
 
     const getStockDetails = async () => {
       try {
