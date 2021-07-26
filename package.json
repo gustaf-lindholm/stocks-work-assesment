@@ -26,7 +26,9 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "run-p start-app start-api",
+    "start-app": "cross-env REACT_APP_API_BASE_URL=http://localhost:3001 react-scripts start",
+    "start-api": "json-server --port 3001 --watch db.json --delay 0",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -47,6 +49,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": "^7.14.5"
+    "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": "^7.14.5",
+    "cross-env": "^7.0.3",
+    "json-server": "^0.16.3",
+    "npm-run-all": "^4.1.5"
   }
 }
