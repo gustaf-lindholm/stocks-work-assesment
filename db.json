@@ -1,10 +1,15 @@
 {
-  "posts": [
-    { "id": 1, "title": "json-server", "author": "typicode" },
-    { "id": 2, "title": "json-server", "author": "typicode" }
-  ],
-  "comments": [
-    { "id": 1, "body": "some comment", "postId": 1 }
-  ],
-  "profile": { "name": "typicode" }
+  "portfolio": [
+    {
+      "1. symbol": "AAPL",
+      "2. name": "string",
+      "3. type": "string",
+      "4. region": "string",
+      "5. marketOpen": "string",
+      "6. marketClose": "string",
+      "7. timezone": "string",
+      "8. currency": "string",
+      "9. matchScore": "string"
+    }
+  ]
 }
