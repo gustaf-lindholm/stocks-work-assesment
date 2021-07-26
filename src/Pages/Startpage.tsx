@@ -15,7 +15,7 @@ const StartPage: React.FC<{
         <Search onAddToPortfolio={onAddToPortfolio} />
       </Box>
       <Box border="1px solid gray" width={{ sm: '100%', md: '50%' }}>
-        <Portfolio portfolio={portfolio} onRemoveFromPortfolio={onRemoveFromPortfolio} />
+        <Portfolio onRemoveFromPortfolio={onRemoveFromPortfolio} />
       </Box>
     </Flex>
   );

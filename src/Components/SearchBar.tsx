@@ -3,43 +3,13 @@ import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control'
 import { Input } from '@chakra-ui/input';
 import { InputGroup, InputLeftAddon } from '@chakra-ui/react';
 
-const SearchBar: React.FC<{ setSearchResult: (result: []) => void, setIsLoading: (arg: boolean) => void, isLoading: boolean }> = ({ setSearchResult, setIsLoading, isLoading }) => {
-
-  const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
-
-  const [searchParam, setSearchParam] = React.useState('');
-
-  React.useEffect(() => {
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
-
-    const search = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(url);
-
-        if (response.ok) {
-          const searchResult = await response.json();
-
-          setSearchResult(searchResult.bestMatches);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false)
-      }
-    };
-
-    // only search if more than two letters
-    searchParam.length > 2 && search();
-
-    // listen for changes in the search input
-  }, [searchParam]);
+const SearchBar: React.FC<{ setSearchParam: (string: string) => void, isLoading: boolean }> = ({ setSearchParam, isLoading }) => {
 
   return (
     <FormControl id="symbol" mb="2">
       <FormLabel>Stock search</FormLabel>
       <InputGroup>
-      <InputLeftAddon children="🔍"/>
+      <InputLeftAddon>🔍</InputLeftAddon>
       <Input
         onChange={(e) => {
           setSearchParam(e.target.value);

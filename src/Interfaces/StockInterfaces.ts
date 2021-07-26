@@ -1,3 +1,7 @@
+export interface ISymbolSearchResult {
+  bestMatches: IStock[]
+}
+
 export interface IStock {
   "1. symbol": string;
   "2. name": string;
