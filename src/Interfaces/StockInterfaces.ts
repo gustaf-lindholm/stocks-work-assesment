@@ -1,7 +1,8 @@
 export interface IStock {
+  id: string,
   "1. symbol": string;
   "2. name": string;
-  "3.type": string;
+  "3. type": string;
   "4. region": string;
   "5. marketOpen": string;
   "6. marketClose": string;
