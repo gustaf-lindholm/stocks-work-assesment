@@ -1,14 +1,70 @@
 import * as React from 'react';
 import { List, ListItem, Text, Spacer, Button, Skeleton, Stack } from '@chakra-ui/react';
 import { IStock } from '../Interfaces/StockInterfaces';
+import { nanoid } from 'nanoid';
 
 const SearchResults: React.FC<{
   searchResult: IStock[];
-  onAddToPortfolio: (stock: IStock) => void;
-  isLoading: boolean
-}> = ({ searchResult, onAddToPortfolio, isLoading }) => {
+  setPortfolioHandler: (stock: IStock) => void;
+  portfolio: IStock[];
+  isLoading: boolean;
+  searchIsLoading: boolean
+  startLoading: () => void;
+  stopLoading: () => void;
+}> = ({ searchResult, setPortfolioHandler, portfolio, searchIsLoading, startLoading, stopLoading }) => {
+
+  // used to show spinner in specific delete button
+  const [currentId, setCurrentId] = React.useState<string | boolean>("");
+
+  const isInPortfolio = (stock : IStock) => {
+    const filtered = portfolio.filter((item, index) => {
+      return stock['1. symbol'] === portfolio[index]['1. symbol'];
+    });
+    
+    return filtered.length === 0 ? false : true;
+  };
+
+  const addToPortfolioHandler = async (stock: IStock) => {
+    // Check if stock is already in portfolio
+
+    const isDuplicate = isInPortfolio(stock)
+
+    
+    // If stock not in portfolio, add it.
+    if (!isDuplicate) {
+      setCurrentId(stock['1. symbol']);
+      startLoading();
+
+      const url = 'http://localhost:3001/portfolio';
+
+      // JSON-Server requires a unique ID
+      stock.id = nanoid();
+
+      // spara till api
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(stock),
+        });
+
+        // if ok and resource created, set state
+        if (response.ok && response.status === 201) setPortfolioHandler(stock);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        stopLoading();
+        setCurrentId(false)
+      }
+    }
+
+  };
+
+  // @todo response if you already has added stock
   if (!searchResult) return <Text>Search for stocks to see them here</Text>;
-  if (isLoading) {
+  if (searchIsLoading) {
     return (
       <Stack>
         <Skeleton height="20px" />
@@ -19,7 +75,7 @@ const SearchResults: React.FC<{
   }
   return (
     <List spacing={3} p="4" border="1px solid gray">
-      {searchResult.map((item, index) => {
+      {searchResult.map((item) => {
         return (
           <ListItem
             shadow="md"
@@ -28,13 +84,20 @@ const SearchResults: React.FC<{
             display="flex"
             flexDirection="row"
             alignItems="center"
-            key={searchResult[index]['1. symbol']}
+            key={item['1. symbol']}
           >
             <Text fontSize={['sm', 'md']} isTruncated maxW="80%">
-              {`${searchResult[index]['2. name']} - ${searchResult[index]['2. name']}`}
+              {`${item['2. name']} - ${item['1. symbol']}`}
             </Text>
             <Spacer />
-            <Button onClick={() => onAddToPortfolio(searchResult[index])}>➕</Button>
+            <Button
+              id={item['1. symbol']}
+              onClick={() => addToPortfolioHandler(item)}
+              loadingText=""
+              isLoading={currentId === item['1. symbol']}
+            >
+              ➕
+            </Button>
           </ListItem>
         );
       })}
