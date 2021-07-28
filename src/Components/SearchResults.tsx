@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { List, ListItem, Text, Spacer, Button, Skeleton, Stack } from '@chakra-ui/react';
+import {
+  List,
+  ListItem,
+  Text,
+  Spacer,
+  Button,
+  Skeleton,
+  Stack,
+  Badge,
+} from '@chakra-ui/react';
 import { IStock } from '../Interfaces/StockInterfaces';
 import { nanoid } from 'nanoid';
 
@@ -7,29 +16,38 @@ const SearchResults: React.FC<{
   searchResult: IStock[];
   setPortfolioHandler: (stock: IStock) => void;
   portfolio: IStock[];
-  isLoading: boolean;
-  searchIsLoading: boolean
+  searchIsLoading: boolean;
   startLoading: () => void;
   stopLoading: () => void;
-}> = ({ searchResult, setPortfolioHandler, portfolio, searchIsLoading, startLoading, stopLoading }) => {
+}> = ({
+  searchResult,
+  setPortfolioHandler,
+  portfolio,
+  searchIsLoading,
+  startLoading,
+  stopLoading,
+}) => {
 
-  // used to show spinner in specific delete button
-  const [currentId, setCurrentId] = React.useState<string | boolean>("");
+  // used to show spinner in specific add button
+  const [currentId, setCurrentId] = React.useState<string | boolean>('');
 
-  const isInPortfolio = (stock : IStock) => {
-    const filtered = portfolio.filter((item, index) => {
-      return stock['1. symbol'] === portfolio[index]['1. symbol'];
+  // state check if already added.
+  const [addedId, setAddedId] = React.useState('');
+  const [isAdded, setIsAdded] = React.useState(false);
+
+  const isInPortfolio = (stock: IStock) => {
+    // check if the clicked stock is already in portfolio
+    const filtered = portfolio.filter((item) => {
+      return stock['1. symbol'] === item['1. symbol'];
     });
-    
+
     return filtered.length === 0 ? false : true;
   };
 
   const addToPortfolioHandler = async (stock: IStock) => {
     // Check if stock is already in portfolio
+    const isDuplicate = isInPortfolio(stock);
 
-    const isDuplicate = isInPortfolio(stock)
-
-    
     // If stock not in portfolio, add it.
     if (!isDuplicate) {
       setCurrentId(stock['1. symbol']);
@@ -56,13 +74,17 @@ const SearchResults: React.FC<{
         console.log(error);
       } finally {
         stopLoading();
-        setCurrentId(false)
+        setCurrentId(false);
+        setIsAdded(false);
+        setAddedId("");
       }
+    } else {
+      // if duplicate, set some state to track which one
+      setAddedId(stock['1. symbol']);
+      setIsAdded(true);
     }
-
   };
 
-  // @todo response if you already has added stock
   if (!searchResult) return <Text>Search for stocks to see them here</Text>;
   if (searchIsLoading) {
     return (
@@ -90,10 +112,16 @@ const SearchResults: React.FC<{
               {`${item['2. name']} - ${item['1. symbol']}`}
             </Text>
             <Spacer />
+
+            {isAdded && addedId === item['1. symbol'] && (
+
+                <Badge mr="2" colorScheme="purple">Already added</Badge>
+            )}
             <Button
               id={item['1. symbol']}
               onClick={() => addToPortfolioHandler(item)}
               loadingText=""
+              disabled={isAdded && addedId === item['1. symbol']}
               isLoading={currentId === item['1. symbol']}
             >
               ➕

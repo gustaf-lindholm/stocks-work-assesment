@@ -1,4 +1,4 @@
-import { Box, Flex, Heading } from '@chakra-ui/layout';
+import { Box, Flex } from '@chakra-ui/layout';
 import * as React from 'react';
 import Portfolio from '../Components/Portfolio';
 import Search from '../Components/Search';
@@ -7,6 +7,10 @@ import { IStock } from '../Interfaces/StockInterfaces';
 
 const StartPage: React.FC = () => {
   const [portfolio, setPortfolio] = React.useState<IStock[]>([]);
+
+  // isLoading passed to <Portfolio> to show feedback when fetching and
+  // adding to portfolio.
+  // loading started and stopped in <SearchResult> on adding.
   const [isLoading, startLoading, stopLoading] = useLoading();
 
   // set new stock to portfolio state
@@ -46,7 +50,6 @@ const StartPage: React.FC = () => {
         <Search
           portfolio={portfolio}
           setPortfolioHandler={setPortfolioHandler}
-          isLoading={isLoading}
           startLoading={startLoading}
           stopLoading={stopLoading}
         />

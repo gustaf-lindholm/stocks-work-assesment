@@ -18,7 +18,9 @@ import { NavLink } from 'react-router-dom';
 
 const Portfolio: React.FC<{ portfolio: IStock[]; fetchPortfolio: () => void; isLoading: boolean }> =
   ({ portfolio, fetchPortfolio, isLoading }) => {
-    const [currentId, setCurrentId] = React.useState(""); // used show spinner in delete button
+     
+    // used show loading spinner in delete button
+    const [currentId, setCurrentId] = React.useState("");
 
     const onRemoveHandler = async (id: string) => {
       const url = `http://localhost:3001/portfolio/${id}`;
