@@ -1,19 +1,25 @@
 import * as React from 'react';
 import { FormControl, FormLabel, FormHelperText } from '@chakra-ui/form-control';
 import { Input } from '@chakra-ui/input';
-import { InputGroup, InputLeftAddon } from '@chakra-ui/react';
+import { InputGroup, InputLeftAddon, Text, Spinner } from '@chakra-ui/react';
 
-const SearchBar: React.FC<{ setSearchResult: (result: []) => void, setIsLoading: (arg: boolean) => void, isLoading: boolean }> = ({ setSearchResult, setIsLoading, isLoading }) => {
+const SearchBar: React.FC<{
+  setSearchResult: (searchResult: []) => void;
+  setSearchIsLoading: (arg: boolean) => void;
+  searchIsLoading: boolean
+}> = ({ setSearchResult, setSearchIsLoading, searchIsLoading }) => {
+
+  // const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
+  const [searchParam, setSearchParam] = React.useState('');
 
   const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
 
-  const [searchParam, setSearchParam] = React.useState('');
-
   React.useEffect(() => {
     const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
+    // const url = 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo';
 
     const search = async () => {
-      setIsLoading(true);
+      setSearchIsLoading(true);
       try {
         const response = await fetch(url);
 
@@ -25,28 +31,30 @@ const SearchBar: React.FC<{ setSearchResult: (result: []) => void, setIsLoading:
       } catch (error) {
         console.log(error);
       } finally {
-        setIsLoading(false)
+        setSearchIsLoading(false);
       }
     };
 
-    // only search if more than two letters
-    searchParam.length > 2 && search();
+    // only search if more than three letters
+    searchParam.length > 3 && search();
 
     // listen for changes in the search input
-  }, [searchParam]);
+  }, [apiKey, searchParam, setSearchIsLoading, setSearchResult]);
 
   return (
     <FormControl id="symbol" mb="2">
       <FormLabel>Stock search</FormLabel>
       <InputGroup>
-      <InputLeftAddon children="🔍"/>
-      <Input
-        onChange={(e) => {
-          setSearchParam(e.target.value);
-        }}
-        type="text"
-        placeholder="Saab"
-      />
+        <InputLeftAddon>
+        {searchIsLoading ? <Spinner /> : <Text>🔍</Text>}
+        </InputLeftAddon>
+        <Input
+          onChange={(e) => {
+            setSearchParam(e.target.value);
+          }}
+          type="text"
+          placeholder="Saab"
+        />
       </InputGroup>
       <FormHelperText>Search for stocks with name or symbol</FormHelperText>
     </FormControl>

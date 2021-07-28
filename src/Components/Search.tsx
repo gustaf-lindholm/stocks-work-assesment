@@ -12,12 +12,13 @@ const Search: React.FC<{
 }> = ({ setPortfolioHandler, portfolio, isLoading, startLoading, stopLoading }) => {
 
   const [searchResult, setSearchResult] = React.useState<[] | undefined>();
+
   // loading state for searching
   const [searchIsLoading, setSearchIsLoading] = React.useState(false)
 
   return (
     <>
-      <SearchBar setSearchIsLoading={setSearchIsLoading} setSearchResult={setSearchResult} />
+      <SearchBar searchIsLoading={searchIsLoading} setSearchIsLoading={setSearchIsLoading} setSearchResult={setSearchResult} />
       <SearchResults
         searchResult={searchResult!}
         portfolio={portfolio}
