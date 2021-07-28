@@ -29,13 +29,11 @@ const Details = () => {
 
         if (response.ok) {
           const details: IStockDetails = await response.json();
-          console.log(details);
 
           // Alpha Vantage API returns 200 OK even if a company is not found.
           // Check that we actually recieve an object.
           if (!Object.keys(details).includes('Note') && Object.keys(details).length > 0) {
             // format market capitalizaion before saving to state
-            console.log('FIRST IF');
             details.MarketCapitalization = currencyFormatter(
               details.Currency,
               Number(details.MarketCapitalization)
