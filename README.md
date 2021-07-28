@@ -11,6 +11,12 @@ In the project directory, you can run:
 
 ### `npm start`
 
+Starts JSON-Server and the app.
+
+Delay on JSON-Server response time can be set with the --delay flag:
+
+`"start-api": "json-server --port 3001 --watch db.json --delay 1000",`
+
 Runs the app in the development mode.<br /> Open
 [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
