@@ -3,11 +3,11 @@ import { List, ListItem, Text, Spacer, Button, Skeleton, Stack } from '@chakra-u
 import { IStock } from '../Interfaces/StockInterfaces';
 
 const SearchResults: React.FC<{
-  searchResult: IStock[];
+  searchResult: IStock[] | null;
   onAddToPortfolio: (stock: IStock) => void;
   isLoading: boolean
 }> = ({ searchResult, onAddToPortfolio, isLoading }) => {
-  if (!searchResult) return <Text>Search for stocks to see them here</Text>;
+  if (!searchResult) return <Text>Search for stocks to see them here ⬆️</Text>;
   if (isLoading) {
     return (
       <Stack>

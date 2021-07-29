@@ -8,13 +8,13 @@ import { Heading, Text } from "@chakra-ui/react";
 
 const Search: React.FC<{ onAddToPortfolio: (stock: IStock) => void }> = ({ onAddToPortfolio }) => {
   const [searchParam, setSearchParam] = React.useState('');
-  const [searchResult, setSearchResult] = React.useState<IStock[]>([]);
+  const [searchResult, setSearchResult] = React.useState<IStock[] | null>(null);
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const apiKey = undefined;
 
-  // const url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo";
-  const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
+  const url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo";
+  // const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
 
   const [isLoading, hasError, sendRequest] = useHttp<ISymbolSearchResult>();
 
