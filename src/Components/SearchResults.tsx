@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { List, ListItem, Text, Spacer, Button, Skeleton, Stack } from '@chakra-ui/react';
-import { IStock } from '../Interfaces/StockInterfaces';
+import * as React from "react";
+import { List, ListItem, Text, Spacer, Button, Skeleton, Stack, Tooltip } from "@chakra-ui/react";
+import { IStock } from "../Interfaces/StockInterfaces";
 
 const SearchResults: React.FC<{
   searchResult: IStock[] | null;
   onAddToPortfolio: (stock: IStock) => void;
-  isLoading: boolean
+  isLoading: boolean;
 }> = ({ searchResult, onAddToPortfolio, isLoading }) => {
   if (!searchResult) return <Text>Search for stocks to see them here ⬆️</Text>;
   if (isLoading) {
@@ -18,8 +18,8 @@ const SearchResults: React.FC<{
     );
   }
   return (
-    <List spacing={3} p="4" border="1px solid gray">
-      {searchResult.map((item, index) => {
+    <List fontSize={["sm", "md"]} spacing={3} p="4" border="1px solid gray">
+      {searchResult.map((item) => {
         return (
           <ListItem
             shadow="md"
@@ -28,13 +28,21 @@ const SearchResults: React.FC<{
             display="flex"
             flexDirection="row"
             alignItems="center"
-            key={searchResult[index]['1. symbol']}
+            key={item["1. symbol"]}
           >
-            <Text fontSize={['sm', 'md']} isTruncated maxW="80%">
-              {`${searchResult[index]['2. name']} - ${searchResult[index]['2. name']}`}
+            <Text isTruncated maxW="80%">
+              {`${item["2. name"]} - ${item["1. symbol"]}`}
             </Text>
             <Spacer />
-            <Button onClick={() => onAddToPortfolio(searchResult[index])}>➕</Button>
+            {item.isAdded ? (
+              <>
+                <Tooltip label="Already in portfolio">
+                  <Text mr="4">⭐</Text>
+                </Tooltip>
+              </>
+            ) : (
+              <Button onClick={() => onAddToPortfolio(item)}>➕</Button>
+            )}
           </ListItem>
         );
       })}
