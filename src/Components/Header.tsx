@@ -1,9 +1,9 @@
-import { Flex } from '@chakra-ui/layout';
-import { Button, Heading, Link, Spacer, Text } from '@chakra-ui/react';
-import * as React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Flex } from "@chakra-ui/layout";
+import { Heading } from "@chakra-ui/react";
+import * as React from "react";
+import { NavLink } from "react-router-dom";
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <Flex
       minH="80px"
