@@ -14,17 +14,19 @@ import { Heading, Text } from "@chakra-ui/react";
 const Search: React.FC<{
   portfolio: IPortfolioStock[] | null;
   onAddToPortfolio: (stock: IStock) => void;
-}> = ({ portfolio, onAddToPortfolio }) => {
+  currentId: string | null;
+  isSaveLoading: boolean;
+}> = ({ portfolio, onAddToPortfolio, currentId, isSaveLoading }) => {
   const [searchParam, setSearchParam] = React.useState("");
   const [searchResult, setSearchResult] = React.useState<IStock[] | null>(null);
   const [errorMessage, setErrorMessage] = React.useState("");
 
-  // const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
+  const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
 
-  const url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo";
-  // const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
+  // const url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo";
+  const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchParam}&apikey=${apiKey}`;
 
-  const [searchIsLoading, searchHasError, sendSearchRequest] = useHttp<ISymbolSearchResult>();
+  const [isLoadingSearch, searchHasError, sendSearchRequest] = useHttp<ISymbolSearchResult>();
 
   // Effect for searching
   React.useEffect(() => {
@@ -57,7 +59,7 @@ const Search: React.FC<{
 
   return (
     <>
-      <SearchBar setSearchParam={setSearchParam} isLoading={searchIsLoading} />
+      <SearchBar setSearchParam={setSearchParam} isLoading={isLoadingSearch} />
       {searchHasError || errorMessage ? (
         <>
           <Heading>Error</Heading>
@@ -67,7 +69,9 @@ const Search: React.FC<{
         <SearchResults
           searchResult={searchResult}
           onAddToPortfolio={onAddToPortfolio}
-          isLoading={searchIsLoading}
+          isLoadingSearch={isLoadingSearch}
+          isSaveLoading={isSaveLoading}
+          currentId={currentId}
         />
       )}
     </>

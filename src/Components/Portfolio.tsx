@@ -21,8 +21,8 @@ const Portfolio: React.FC<{
   isLoading: boolean;
   isDeleteLoading: boolean;
   onDeleteHandler: (id: string) => void;
-  deleteId: string | null;
-}> = ({ portfolio, isLoading, isDeleteLoading, deleteId, onDeleteHandler }) => {
+  currentId: string | null;
+}> = ({ portfolio, isLoading, isDeleteLoading, currentId, onDeleteHandler }) => {
   return (
     <Table variant="striped" colorScheme="gray">
       {!portfolio && <TableCaption>Search for stocks and add them to the portfolio</TableCaption>}
@@ -47,7 +47,7 @@ const Portfolio: React.FC<{
                 <Button
                   _hover={{ backgroundColor: "red" }}
                   onClick={() => onDeleteHandler(item.id)}
-                  isLoading={isDeleteLoading && deleteId === item.id}
+                  isLoading={isDeleteLoading && currentId === item.id}
                 >
                   🗑️
                 </Button>

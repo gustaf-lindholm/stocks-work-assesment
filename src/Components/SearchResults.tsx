@@ -5,10 +5,12 @@ import { IStock } from "../Interfaces/StockInterfaces";
 const SearchResults: React.FC<{
   searchResult: IStock[] | null;
   onAddToPortfolio: (stock: IStock) => void;
-  isLoading: boolean;
-}> = ({ searchResult, onAddToPortfolio, isLoading }) => {
+  currentId: string | null;
+  isLoadingSearch: boolean;
+  isSaveLoading: boolean;
+}> = ({ searchResult, onAddToPortfolio, currentId, isLoadingSearch, isSaveLoading }) => {
   if (!searchResult) return <Text>Search for stocks to see them here ⬆️</Text>;
-  if (isLoading) {
+  if (isLoadingSearch) {
     return (
       <Stack>
         <Skeleton height="20px" />
@@ -41,7 +43,12 @@ const SearchResults: React.FC<{
                 </Tooltip>
               </>
             ) : (
-              <Button onClick={() => onAddToPortfolio(item)}>➕</Button>
+              <Button
+                onClick={() => onAddToPortfolio(item)}
+                isLoading={isSaveLoading && currentId === item["1. symbol"]}
+              >
+                ➕
+              </Button>
             )}
           </ListItem>
         );

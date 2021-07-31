@@ -34,7 +34,7 @@ const StartPage: React.FC = () => {
   const [portfolio, setPortfolio] = React.useState<IPortfolioStock[] | null>(null);
 
   // delete id to set loading state on specific delete button
-  const [deleteId, setDeleteId] = React.useState<string | null>(null);
+  const [currentId, setCurrentId] = React.useState<string | null>(null);
 
   // Hooks for API-calls
   const [isFetchLoading, hasFetchError, fetchPortfolio, fetchResponse] =
@@ -162,7 +162,7 @@ const StartPage: React.FC = () => {
       );
     }
 
-    setDeleteId(id);
+    setCurrentId(id);
 
     const requestParams: IRequestParams = {
       url: `${url}/${id}`,
@@ -175,14 +175,19 @@ const StartPage: React.FC = () => {
   return (
     <Flex flexWrap="wrap">
       <Box border="1px solid gray" p="4" width={{ sm: "100%", md: "50%" }}>
-        <Search onAddToPortfolio={onAddToPortfolio} portfolio={portfolio} />
+        <Search
+          onAddToPortfolio={onAddToPortfolio}
+          portfolio={portfolio}
+          currentId={currentId}
+          isSaveLoading={isSaveLoading}
+        />
       </Box>
       <Box border="1px solid gray" width={{ sm: "100%", md: "50%" }}>
         <Portfolio
           portfolio={portfolio}
           isLoading={isFetchLoading}
           isDeleteLoading={isDeleteLoading}
-          deleteId={deleteId}
+          currentId={currentId}
           onDeleteHandler={onDeleteHandler}
         />
       </Box>
