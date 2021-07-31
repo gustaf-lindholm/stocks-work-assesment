@@ -1,58 +1,59 @@
-import * as React from 'react';
-import { Heading } from '@chakra-ui/layout';
-import { Box, Button, SkeletonCircle, SkeletonText, Text } from '@chakra-ui/react';
-import { useHistory, useParams } from 'react-router';
-import { IStockDetails } from '../Interfaces/StockInterfaces';
-import { currencyFormatter } from '../utils/CurrencyFormatter';
+import * as React from "react";
+import { Heading } from "@chakra-ui/layout";
+import { Box, Button, SkeletonCircle, SkeletonText, Text } from "@chakra-ui/react";
+import { useHistory, useParams } from "react-router";
+import { IStockDetails, IReturnData, IRequestParams } from "../Interfaces/StockInterfaces";
+import { currencyFormatter } from "../utils/CurrencyFormatter";
+import useHttp from "../hooks/use-http";
 
 type Params = {
   stockSymbol: string;
 };
 
-const Details = () => {
+const Details: React.FC = () => {
   const apiKey = process.env.REACT_APP_ALPHA_API_KEY;
 
   const { stockSymbol }: Params = useParams();
   const [stockDetails, setStockDetails] = React.useState<IStockDetails | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, hasError, sendRequest, responseObj] = useHttp<IStockDetails>();
+  const [hasNoData, setHasNoData] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const history = useHistory();
 
   const url = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stockSymbol}&apikey=${apiKey}`;
-
-  // demo url so not to use "api-key quota"
   // const url = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo";
+
   React.useEffect(() => {
-    const getStockDetails = async () => {
-      try {
-        const response = await fetch(url);
+    const dataHandler = (returnData: IReturnData<IStockDetails>): void => {
+      // Alpha Vantage API returns 200 OK even if a company is not found.
+      // Check that we actually recieve an object.
+      if (Object.keys(returnData.data).length !== 0 && !returnData.data["Error Message"]) {
+        // format market capitalizaion before saving to state
+        returnData.data.MarketCapitalization = currencyFormatter(
+          returnData.data.Currency,
+          Number(returnData.data.MarketCapitalization)
+        );
 
-        if (response.ok) {
-          const details: IStockDetails = await response.json();
+        setStockDetails(returnData.data);
+        setHasNoData(false);
 
-          // Alpha Vantage API returns 200 OK even if a company is not found.
-          // Check that we actually recieve an object.
-          if (Object.keys(details).length !== 0) {
-            // format market capitalizaion before saving to state
-            details.MarketCapitalization = currencyFormatter(
-              details.Currency,
-              Number(details.MarketCapitalization)
-            );
+        // api returns 200 ok but empty object when no info in db
+      } else if (Object.keys(returnData.data).length === 0 && returnData.statusCode === 200) {
+        setHasNoData(true);
 
-            setStockDetails(details);
-          } else {
-            setStockDetails(null);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
+        // Handle if we get error message in response.
+      } else if (returnData.data["Error Message"]) {
+        setErrorMessage(returnData.data["Error Message"]);
       }
     };
 
-    getStockDetails();
-  }, []);
+    const requestParams: IRequestParams = {
+      url,
+    };
+
+    sendRequest(requestParams, dataHandler);
+  }, [sendRequest, url]);
 
   const goBackButton = (
     <Button
@@ -71,11 +72,19 @@ const Details = () => {
         <SkeletonText mt="4" noOfLines={4} spacing="4" />
       </Box>
     );
-  if (!stockDetails)
+  if (hasNoData)
     return (
       <Box border="1px solid gray" p="4">
         {goBackButton}
-        <Heading>Something went wrong...</Heading>
+        <Heading>No details for stock with symbol &quot;{stockSymbol}&quot;</Heading>
+      </Box>
+    );
+  if (errorMessage)
+    return (
+      <Box border="1px solid gray" p="4">
+        {goBackButton}
+        <Heading>Error fetching details</Heading>
+        <Text>{errorMessage}</Text>
       </Box>
     );
 
@@ -83,16 +92,16 @@ const Details = () => {
     <Box border="1px solid gray" p="4">
       {goBackButton}
       <Heading mb="4" mt="4">
-        {stockDetails.Name}
+        {stockDetails?.Name}
       </Heading>
       <Text>
-        <b>Address</b> {stockDetails.Address}
+        <b>Address</b> {stockDetails?.Address}
       </Text>
       <Text>
         <b>Market Capitalization </b>
-        {stockDetails.MarketCapitalization}
+        {stockDetails?.MarketCapitalization}
       </Text>
-      <Text mt="4">{stockDetails.Description}</Text>
+      <Text mt="4">{stockDetails?.Description}</Text>
     </Box>
   );
 };
