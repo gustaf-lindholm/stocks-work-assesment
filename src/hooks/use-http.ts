@@ -1,43 +1,28 @@
-import * as React from 'react';
-
-interface IRequestParams {
-  url: string;
-  method?: string;
-  headers?: HeadersInit | undefined;
-  body?: Record<string, unknown> | null;
-}
+import * as React from "react";
+import { IRequestParams, IReturnData } from "../Interfaces/StockInterfaces";
 
 /**
- * Generic interface for the dataHandler function
- * that is declared in the component using this hook
- */
-interface IGenericDataHandler<T> {
-  (arg: T): void;
-}
-
-// Return type for the generic dataHandler function
-type GenericDataHandler = <T>(data: T) => void;
-
-// Return type for the sendRequest function
-type SendRequest = (requestParams: IRequestParams, dataHandler: GenericDataHandler) => void;
-
-// Declare a tuple with return types
-let Returns: [boolean, boolean, SendRequest];
-
-/**
- *
+ * Hook that makes API-calls.
+ * Pass the type of the expected response to the hook
  * @returns isLoading, hasError and sendRequest function to make API-calls
  * @callback sendRequest takes two parameters:
  * requestParams
  * dataHandler
+ * @type The type you expect to get back
  */
-const useHttp = <T extends Partial<T>>(): typeof Returns => {
+const useHttp = <T>(): [
+  boolean, // declare tuple with return types
+  boolean,
+  (requestParams: IRequestParams, dataHandler: (data: IReturnData<T>) => void) => void,
+  Response | null
+] => {
   // set states
   const [isLoading, setIsLoading] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
+  const [responseObject, setResponseObject] = React.useState<Response | null>(null);
 
   const defaultParams: IRequestParams = React.useMemo((): IRequestParams => {
-    return { url: '', method: 'GET', headers: {}, body: null };
+    return { url: "", method: "GET", headers: {}, body: null };
   }, []);
 
   /**
@@ -48,7 +33,10 @@ const useHttp = <T extends Partial<T>>(): typeof Returns => {
    * and the dataHandler function.
    */
   const sendRequest = React.useCallback(
-    async (requestParams: IRequestParams = defaultParams, dataHandler: IGenericDataHandler<T>) => {
+    async (
+      requestParams: IRequestParams = defaultParams,
+      dataHandler: (data: IReturnData<T>) => void
+    ) => {
       setIsLoading(true);
 
       // fetch data
@@ -56,22 +44,29 @@ const useHttp = <T extends Partial<T>>(): typeof Returns => {
         const response = await fetch(requestParams.url, {
           method: requestParams.method,
           headers: requestParams.headers,
-          body: requestParams.body ? JSON.stringify(requestParams.body) : null,
+          body: requestParams.body ? requestParams.body : null,
         });
 
         if (!response.ok) {
-          throw new Error('Request failed');
+          setResponseObject(response);
+          throw new Error();
         }
 
         const data: T = await response.json();
 
-        // function in the component using the useFetch hook.
-        // that function decides what to do with the data
-        dataHandler(data);
+        // send back response data and status
+        const returnData: IReturnData<T> = {
+          data: data,
+          statusCode: response.status,
+          statusText: response.statusText,
+        };
+
+        setResponseObject(response);
+
+        // dataHandler is defined in the component using this hook
+        return dataHandler(returnData);
       } catch (error) {
         setHasError(true);
-
-        console.log(error);
       } finally {
         setIsLoading(false);
       }
@@ -80,7 +75,7 @@ const useHttp = <T extends Partial<T>>(): typeof Returns => {
   );
 
   // return loading, error and the sendRequest function
-  return [isLoading, hasError, sendRequest];
+  return [isLoading, hasError, sendRequest, responseObject];
 };
 
 export default useHttp;
