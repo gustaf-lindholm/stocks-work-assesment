@@ -1,6 +1,5 @@
 import { Box, Flex } from "@chakra-ui/layout";
-import { Status, Text, ToastOptions, useToast } from "@chakra-ui/react";
-import { nanoid } from "nanoid";
+import { useToast } from "@chakra-ui/react";
 import * as React from "react";
 import Portfolio from "../Components/Portfolio";
 import Search from "../Components/Search";
@@ -28,7 +27,7 @@ const StartPage: React.FC = () => {
   };
 
   // ref to handle when to fetch portfolio
-  const doUpdate = React.useRef(false);
+  const doUpdate = React.useRef(true);
 
   // portfolio state
   const [portfolio, setPortfolio] = React.useState<IPortfolioStock[] | null>(null);
@@ -50,10 +49,8 @@ const StartPage: React.FC = () => {
    */
   React.useEffect(() => {
     const dataHandler = (returnData: IReturnData<IPortfolioStock[]>): void => {
-      console.log("1");
-      // om den är tom när den kommer tillbaka, sätt till null
+      // Set portfolio state to null if it's empty
       if (returnData.data.length === 0) {
-        console.log("2 fetchresponse", fetchResponse);
         setPortfolio(null);
       } else {
         setPortfolio(returnData.data);
@@ -68,23 +65,24 @@ const StartPage: React.FC = () => {
     const toastId = "fetch";
     // if error and not already showing a toast
     if (hasFetchError && !toast.isActive(toastId)) {
-      showToast(
-        `Error fetching portfolio.
+      toast({
+        title: "Error",
+        description: `Error fetching portfolio.
         Response Code: ${fetchResponse?.status}
         Message: ${fetchResponse?.statusText}`,
-        "error"
-      );
-
-      console.log(fetchResponse);
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
-    console.log(hasFetchError);
 
-    if (!portfolio || doUpdate.current) {
+    // Only fetch if trigger is true
+    if (doUpdate.current) {
       fetchPortfolio(requestParams, dataHandler);
+      doUpdate.current = false;
     }
-
-    doUpdate.current = false;
-  }, [fetchPortfolio, isDeleteLoading, isSaveLoading, portfolio]);
+  }, [fetchPortfolio, fetchResponse, hasFetchError, toast, showToast]);
 
   /**
    * Save to portfolio
@@ -107,7 +105,8 @@ const StartPage: React.FC = () => {
 
     // Datahandler for adding to portfolio
     const dataHandler = (response: IReturnData<IPortfolioStock>): void => {
-      console.log("ADD TO PORTFOLIO: ", response.data);
+      doUpdate.current = true;
+
       toast({
         title: `${response.data.data["2. name"]} added to portfolio.`,
         status: "success",
@@ -115,7 +114,6 @@ const StartPage: React.FC = () => {
         isClosable: true,
         position: "top",
       });
-      doUpdate.current = true;
     };
 
     // prevent duplicate toasts
@@ -138,7 +136,7 @@ const StartPage: React.FC = () => {
    */
   const onDeleteHandler = (id: string): void => {
     const deleteHandler = (returnData: IReturnData<IStock>): void => {
-      console.log("DELETE RETURNDATA", returnData);
+      doUpdate.current = true;
 
       toast({
         title: `${id} deleted.`,
@@ -147,8 +145,6 @@ const StartPage: React.FC = () => {
         isClosable: true,
         position: "top",
       });
-
-      doUpdate.current = true;
     };
 
     // prevent duplicate toasts
