@@ -28,6 +28,7 @@ export interface IStockDetails {
   MarketCapitalization: string;
   Description: string;
   Currency: string;
+  ["Error Message"]?: string;
 }
 
 export interface IRequestParams extends RequestInit {
