@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Table,
   TableCaption,
@@ -9,48 +9,23 @@ import {
   Tr,
   Button,
   Tooltip,
-  Heading,
-} from '@chakra-ui/react';
-import { IStock } from '../Interfaces/StockInterfaces';
-import { nanoid } from 'nanoid';
-import { NavLink } from 'react-router-dom';
-import useFetch from '../hooks/use-fetch';
+  Stack,
+  Skeleton,
+} from "@chakra-ui/react";
+import { IPortfolioStock } from "../Interfaces/StockInterfaces";
+import { nanoid } from "nanoid";
+import { NavLink } from "react-router-dom";
 
 const Portfolio: React.FC<{
-  onRemoveFromPortfolio: (id: string) => void;
-}> = ({ onRemoveFromPortfolio }) => {
-
-  // extract variables and sendRequest function from custom hook
-  // sendRequest function takes arguments for at least url
-  // and a function that takes care of the returned data
-  const { isLoading, hasError, sendRequest } = useFetch();
-  const [portfolio, setPortfolio] = React.useState<IStock[] | []>([]);
-
-  const url = 'http://localhost:3001/portfolio';
-
-  React.useEffect(() => {
-
-    const transformData = (data: []) => {
-      setPortfolio(data);
-      console.log('DATA: ', data);
-    };
-
-    sendRequest({ url: url }, transformData);
-  }, []);
-
-
-  // transform data that we get back from the send request function
-  // no external data is used inside, hence empty dependecy array
-
-  
-  if (isLoading) return <Heading>Loading...</Heading>;
-  if(hasError) return <Heading>Error when fetching portfolio.</Heading>
-
+  portfolio: IPortfolioStock[] | null;
+  isLoading: boolean;
+  isDeleteLoading: boolean;
+  onDeleteHandler: (id: string) => void;
+  deleteId: string | null;
+}> = ({ portfolio, isLoading, isDeleteLoading, deleteId, onDeleteHandler }) => {
   return (
     <Table variant="striped" colorScheme="gray">
-      {portfolio.length === 0 && (
-        <TableCaption>Search for stocks and add them to the portfolio</TableCaption>
-      )}
+      {!portfolio && <TableCaption>Search for stocks and add them to the portfolio</TableCaption>}
       <Thead>
         <Tr>
           <Th>Company Name</Th>
@@ -59,19 +34,20 @@ const Portfolio: React.FC<{
         </Tr>
       </Thead>
       <Tbody>
-        {portfolio.map((item) => {
+        {portfolio?.map((item) => {
           return (
             <Tr key={nanoid()}>
-              <Td fontSize={['sm', 'md']}>
-                <NavLink to={`/details/${item['1. symbol']}`}>
-                  <Tooltip label="Click here for details!">{`⭐ ${item['2. name']}`}</Tooltip>
+              <Td fontSize={["sm", "md"]}>
+                <NavLink to={`/details/${item.data["1. symbol"]}`}>
+                  <Tooltip label="Click here for details!">{`⭐ ${item.data["2. name"]}`}</Tooltip>
                 </NavLink>
               </Td>
-              <Td fontSize={['sm', 'md']}>{item['1. symbol']}</Td>
+              <Td fontSize={["sm", "md"]}>{item.data["1. symbol"]}</Td>
               <Td>
                 <Button
-                  _hover={{ backgroundColor: 'red' }}
-                  onClick={() => onRemoveFromPortfolio(item['1. symbol'])}
+                  _hover={{ backgroundColor: "red" }}
+                  onClick={() => onDeleteHandler(item.id)}
+                  isLoading={isDeleteLoading && deleteId === item.id}
                 >
                   🗑️
                 </Button>
@@ -79,6 +55,25 @@ const Portfolio: React.FC<{
             </Tr>
           );
         })}
+        {isLoading && !isDeleteLoading && (
+          <Tr>
+            <Td>
+              <Stack>
+                <Skeleton height="20px" />
+              </Stack>
+            </Td>
+            <Td>
+              <Stack>
+                <Skeleton height="20px" />
+              </Stack>
+            </Td>
+            <Td>
+              <Stack>
+                <Skeleton height="20px" />
+              </Stack>
+            </Td>
+          </Tr>
+        )}
       </Tbody>
     </Table>
   );
