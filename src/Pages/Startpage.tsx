@@ -90,6 +90,7 @@ const StartPage: React.FC = () => {
    * Save to portfolio
    */
   const onAddToPortfolio = (item: IStock): void => {
+    setCurrentId(item["1. symbol"]);
     const data: IPortfolioStock = {
       id: item["1. symbol"],
       data: { ...item },
